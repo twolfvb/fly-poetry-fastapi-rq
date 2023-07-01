@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "fly-fastapi-poetry-worker-queue"
+version = "0.1.0"
+description = ""
+authors = ["Tomás Wolf <tomas.wolf.vb@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fly_fastapi_poetry_worker_queue"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
