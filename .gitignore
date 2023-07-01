@@ -170,3 +170,5 @@ openapi.yml
 # AWS-CLI
 aws/*
 awscliv2.zip
+
+fly.toml
