@@ -12,11 +12,11 @@ app = FastAPI()
 # from env variable
 # now I need redis hostname port password
 redis_host  = os.getenv("REDIS_HOST", "localhost")
-redis_port  = os.getenv("REDIS_PORT", "6379")
+redis_port  = int(os.getenv("REDIS_PORT", "6379"))
 redis_pass  = os.getenv("REDIS_PASS", "")
 
 logger.info("Connecting to redis at %s:%s", redis_host, redis_port)
-r = Redis(host=redis_host, port=redis_port, password=redis_pass)  # type: ignore
+r = Redis(host=redis_host, port=redis_port, password=redis_pass)
 logger.info("Connected to redis? %s", r.ping())
 q = Queue(connection=r)
 
