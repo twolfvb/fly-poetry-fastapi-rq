@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for fly-fastapi-wqueue on 2023-07-01T15:50:20-04:00
+# fly.toml app configuration file generated for fly-fastapi-wqueue on 2023-07-01T17:08:59-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -6,31 +6,36 @@
 app = "fly-fastapi-wqueue"
 primary_region = "scl"
 
+# As soon as you add a process here it will be ran when you deploy,
+# no need for further configs.
 [processes]
   app = "./run.sh"
+  worker = "./run-worker.sh"
+
+[env]
+
+# REDIS_HOST = <here goes the host, something upstash.io>
+# REDIS_PASS = <some numbers in upstash's case>
 
 [[services]]
-  processes = ["app"] # this service only applies to the web block
-  http_checks = []
-  internal_port = 3000
   protocol = "tcp"
-  script_checks = []
+  internal_port = 3000
+  processes = ["app"]
 
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
   [services.concurrency]
+    type = "connections"
     hard_limit = 25
     soft_limit = 20
-    type = "connections"
-
-  [[services.ports]]
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
 
   [[services.tcp_checks]]
-    grace_period = "1s"
     interval = "15s"
-    restart_limit = 6
     timeout = "2s"
+    grace_period = "1s"
+    restart_limit = 6
