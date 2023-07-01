@@ -10,6 +10,7 @@ packages = [{include = "fly_fastapi_poetry_worker_queue"}]
 python = "^3.11"
 fastapi = "^0.99.0"
 uvicorn = "^0.22.0"
+gunicorn = "^20.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
