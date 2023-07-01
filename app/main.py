@@ -1,24 +1,18 @@
 import logging
-import os
 
 from fastapi import FastAPI
-from redis import Redis
 from rq import Queue
+
+from app.redis_client import get_client as get_redis_client
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
-# from env variable
-# now I need redis hostname port password
-redis_host  = os.getenv("REDIS_HOST", "localhost")
-redis_port  = int(os.getenv("REDIS_PORT", "6379"))
-redis_pass  = os.getenv("REDIS_PASS", "")
 
-logger.info("Connecting to redis at %s:%s", redis_host, redis_port)
-r = Redis(host=redis_host, port=redis_port, password=redis_pass)
-logger.info("Connected to redis? %s", r.ping())
-q = Queue(connection=r)
+redis_instance = get_redis_client()
+q = Queue(connection=redis_instance)
+
 
 @app.get("/", tags=["health"], operation_id="check", response_model=str)
 def index() -> str:
@@ -26,16 +20,20 @@ def index() -> str:
     return "ok"
 
 
-@app.post("/factorial", tags=["factorial"], operation_id="factorial", response_model=str)
+@app.post(
+    "/factorial", tags=["factorial"], operation_id="factorial", response_model=str
+)
 def factorial(number: int) -> str:
     """Factorial endpoint."""
     # sleep for 5 seconds
     job = q.enqueue(calc_factorial, number)
-    return job.id
+    return str(job.id)
 
 
 _TOO_BIG = "ran out of memory bro"
 _NEGATIVE = "Number must be positive"
+
+
 def calc_factorial(number: int) -> str:
     """Calculate factorial."""
     logger.info("Calculating factorial for %d", number)
