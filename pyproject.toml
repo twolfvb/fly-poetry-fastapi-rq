@@ -8,6 +8,8 @@ packages = [{include = "fly_fastapi_poetry_worker_queue"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+fastapi = "^0.99.0"
+uvicorn = "^0.22.0"
 
 
 [build-system]
