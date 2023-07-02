@@ -3,6 +3,7 @@ import logging
 import httpx
 
 from app.environment import is_production
+from app.factorial_service.factorial import calc_factorial
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ async def factorial_job(number: int, url: str | None = None) -> None:
         logger.warning("Result is '%s'", _TOO_BIG)
         return
 
-    result = _calc_factorial(number)
+    result = calc_factorial(number)
 
     if url is None and is_production():
         logger.info("No webhook url provided")
@@ -36,12 +37,3 @@ async def factorial_job(number: int, url: str | None = None) -> None:
     async with httpx.AsyncClient() as client:
         await client.post(url, params={"result": str(result)}, headers=headers)
         logger.info("Webhook sent to %s", url)
-
-
-def _calc_factorial(number: int) -> int:
-    """Calculate factorial."""
-    result = 1
-    for i in range(1, number + 1):
-        result *= i
-    logger.warning("Result is'%s", result)
-    return result
