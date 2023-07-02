@@ -9,3 +9,7 @@ flyctl scale count 1 -a fly-fastapi-wqueue --process-group worker
 flyctl scale count 1 -a fly-fastapi-wqueue --process-group app
 
 ```
+
+
+In mac, run the worker with:
+OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES poetry run ./run-worker.sh
