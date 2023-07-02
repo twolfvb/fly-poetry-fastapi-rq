@@ -3,18 +3,16 @@ from typing import Optional
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from rq import Queue
 
 from app.factorial_service.jobs import factorial_job
-from app.redis_client import get_client as get_redis_client
+from app.task_manager import get_task_manager
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-redis_instance = get_redis_client()
-q = Queue(connection=redis_instance)
+task_manager = get_task_manager()
 
 
 class MyModel(BaseModel):
@@ -54,8 +52,7 @@ def index() -> str:
 )
 def factorial(number: int, endpoint: Optional[str] = None) -> str:
     """Factorial endpoint."""
-    job = q.enqueue(factorial_job, number, endpoint)
-    return str(job.id)
+    return task_manager.enqueue(factorial_job, number, endpoint)
 
 
 @app.post("/webhook", tags=["webhook"], operation_id="webhook")
