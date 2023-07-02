@@ -26,10 +26,12 @@ async def factorial_job(number: int, url: str | None = None) -> None:
         logger.info("No webhook url provided")
         return
     if url is None or url == "":
-        url = "http://localhost:3000/webhook"
+        logger.info("No webhook url provided")
+        return
+
     headers = {"Content-Type": "application/json"}
 
-    print("Sending webhook to '%s'", url)
+    logger.info("Sending webhook to %s", url)
 
     async with httpx.AsyncClient() as client:
         await client.post(url, params={"result": str(result)}, headers=headers)
