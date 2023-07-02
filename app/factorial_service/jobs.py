@@ -1,25 +1,20 @@
+""" Can be both used as rq jobs or celery tasks. """
 import logging
 
 import httpx
+from celery import shared_task
 
 from app.environment import is_production
 from app.factorial_service.factorial import calc_factorial
 
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-_TOO_BIG = "ran out of memory bro"
-_NEGATIVE = "Number must be positive"
 
-
+@shared_task()
 async def factorial_job(number: int, url: str | None = None) -> None:
     """Calculate factorial."""
     logger.info("Calculating factorial for %d", number)
-    if number < 0:
-        logger.warning("Result is '%s'", _NEGATIVE)
-        return
-    if number > 10:
-        logger.warning("Result is '%s'", _TOO_BIG)
-        return
 
     result = calc_factorial(number)
 

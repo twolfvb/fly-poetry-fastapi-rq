@@ -9,5 +9,5 @@ def calc_factorial(number: int) -> int:
     result = 1
     for i in range(1, number + 1):
         result *= i
-    logger.warning("Result is'%s", result)
+    logger.warning("Result is'%s'", result)
     return result

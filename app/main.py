@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 task_manager = get_task_manager()
+logger.info("Using %s as task manager", task_manager.__class__.__name__)
 
 
 class MyModel(BaseModel):
