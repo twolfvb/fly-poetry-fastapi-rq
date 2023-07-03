@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task()
-async def factorial_job(number: int, url: str | None = None) -> None:
+def factorial_job(number: int, url: str | None = None) -> None:
     """Calculate factorial."""
     logger.info("Calculating factorial for %d", number)
 
@@ -29,6 +29,6 @@ async def factorial_job(number: int, url: str | None = None) -> None:
 
     logger.info("Sending webhook to %s", url)
 
-    async with httpx.AsyncClient() as client:
-        await client.post(url, params={"result": str(result)}, headers=headers)
+    with httpx.Client() as client:
+        client.post(url, params={"result": str(result)}, headers=headers)
         logger.info("Webhook sent to %s", url)
